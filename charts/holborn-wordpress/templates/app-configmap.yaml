@@ -1,0 +1,23 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "holborn-wordpress.appFullname" . }}
+  labels:
+    {{- include "holborn-wordpress.appLabels" . | nindent 4 }}
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+# /usr/local/etc/php-fpm.d/www.conf
+  php-fpm.www-conf: |-
+    user = www-data
+    group = www-data
+    listen = 0.0.0.0:9000
+    pm = dynamic
+    pm.max_children = 5
+    pm.start_servers = 2
+    pm.min_spare_servers = 1
+    pm.max_spare_servers = 3
+# /usr/local/etc/php-fpm.d/health.conf
+  php-fpm.health-conf: |-
+    pm.status_path = /status
+  gsv: |-
+    google-site-verification: {{ .Values.wordpress.google.siteVerification }}

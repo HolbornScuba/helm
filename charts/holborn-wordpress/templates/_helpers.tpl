@@ -61,3 +61,51 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+==============   Web      Content   ==============
+*/}}
+
+{{- define "holborn-wordpress.webName" -}}
+{{- printf "%s-web" (include "holborn-wordpress.name" .) -}}
+{{- end -}}
+
+{{- define "holborn-wordpress.webFullname" -}}
+{{- printf "%s-web" (include "holborn-wordpress.fullname" .) -}}
+{{- end -}}
+
+{{- define "holborn-wordpress.webSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "holborn-wordpress.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}-web
+{{- end -}}
+
+{{- define "holborn-wordpress.webLabels" -}}
+helm.sh/chart: {{ include "holborn-wordpress.chart" . }}
+{{ include "holborn-wordpress.webSelectorLabels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
+==============   App      Content   ==============
+*/}}
+{{- define "holborn-wordpress.appName" -}}
+{{- printf "%s-app" (include "holborn-wordpress.name" .) -}}
+{{- end -}}
+
+{{- define "holborn-wordpress.appFullname" -}}
+{{- printf "%s-app" (include "holborn-wordpress.fullname" .) -}}
+{{- end -}}
+
+{{- define "holborn-wordpress.appSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "holborn-wordpress.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}-app
+{{- end -}}
+
+{{- define "holborn-wordpress.appLabels" -}}
+helm.sh/chart: {{ include "holborn-wordpress.chart" . }}
+{{ include "holborn-wordpress.appSelectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}

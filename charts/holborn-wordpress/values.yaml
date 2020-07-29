@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 2
+replicaCount: 1
 
 image:
   webRepo:    nginx
@@ -58,16 +58,16 @@ ingress:
     - host: holbornscubalondon.co.uk
       paths:
         - /
-    - host: holbornscubalondon.com
-      paths:
-        - /
+    #- host: holbornscubalondon.com
+    #  paths:
+    #    - /
   tls:
     - secretName: holbornscubalondon.co.uk-tls
       hosts:
         - holbornscubalondon.co.uk
-    - secretName: holbornscubalondon.com-tls
-      hosts:
-        - holbornscubalondon.com
+    #- secretName: holbornscubalondon.com-tls
+    #  hosts:
+    #    - holbornscubalondon.com
 
 nodeSelector: {}
 

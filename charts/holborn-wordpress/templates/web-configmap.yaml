@@ -1,9 +1,9 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ include "holborn-wordpress.fullname" . }}
+  name: {{ include "holborn-wordpress.webFullname" . }}
   labels:
-    {{- include "holborn-wordpress.labels" . | nindent 4 }}
+    {{- include "holborn-wordpress.webLabels" . | nindent 4 }}
     addonmanager.kubernetes.io/mode: Reconcile
 data:
 # nginx /etc/nginx/nginx.conf
@@ -43,13 +43,13 @@ data:
 # nginx /etc/nginx/conf.d/default.conf
   default-conf: |-
     upstream php {
-      server 127.0.0.1:{{ .Values.service.appPort }};
+      server {{ include "holborn-wordpress.appFullname" . }}:{{ .Values.service.appPort }};
     }
     server {
       listen        80;
       server_name   _;
       root          /var/www/html;
-      index         index.php index.html;
+      index         index.php;
       #root          /var/www/clarke/holborn2/wp;
       #index         index.php index.html;
       #subs_filter_types  *;
@@ -69,9 +69,9 @@ data:
         access_log off;
       }
 
-      #location = / {
-      #  rewrite ^(.+)$ /index.php?q=$1 last;
-      #}
+      location = / {
+        rewrite ^(.+)$ /index.php?q=$1 last;
+      }
 
       location / {
         try_files $uri $uri/ /index.php;
@@ -85,12 +85,14 @@ data:
 
       location ~ \.php$ {
         #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
-        #fastcgi_index index.php;
+        fastcgi_index index.php;
         fastcgi_intercept_errors on;
+        fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
         include fastcgi.conf;
         fastcgi_pass php;
-        try_files $uri $uri/ /index.php?$args =404;
+        #try_files $uri $uri/ /index.php?$args =404;
       }
+
 
       location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
         expires max;
@@ -129,16 +131,6 @@ data:
 
     # PHP only, required if PHP was built with --enable-force-cgi-redirect
     fastcgi_param  REDIRECT_STATUS    200;
-# /usr/local/etc/php-fpm.d/www.conf
-  php-fpm.www-conf: |-
-    user = www-data
-    group = www-data
-    listen = 0.0.0.0:9000
-    pm = dynamic
-    pm.max_children = 5
-    pm.start_servers = 2
-    pm.min_spare_servers = 1
-    pm.max_spare_servers = 3
-# /usr/local/etc/php-fpm.d/health.conf
-  php-fpm.health-conf: |-
-    pm.status_path = /status
+
+  gsv: |-
+    google-site-verification: {{ .Values.wordpress.google.siteVerification }}
