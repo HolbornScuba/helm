@@ -109,6 +109,24 @@ wordpress:
   mounts:
     uploads:  false
     plugins:  flase
+    additionalVolumes: []
+#      - name: nfs
+#        nfs:
+#          server: 127.0.0.1
+#          path: /nfs/holborn
+  google:
+    siteVerification: false
+  resource:
+    enabled: false
+#    enabled: resources
+    mounts: []
+#      - mountPath:  /var/www/html/resources
+#        name:       nfs-resources
+    volumes: []
+#      - name: nfs-resources
+#        nfs:
+#          server: 127.0.0.1
+#          path: /nfs/holborn-resources
   readiness:
     path: /
     host: holbornscubalondon.com
@@ -119,4 +137,12 @@ wordpress:
     requests:
       cpu: 500m
       memory: 512Mi
-
+  secure:
+    nonceKey:       false
+    authSalt:       false
+    secureAuthSalt: false
+    loggedInSalt:   false
+    nonceSalt:      false
+    authKey:        false
+    secureAuthKey:  false
+    loggedInKey:    false

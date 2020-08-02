@@ -131,10 +131,10 @@ spec:
         - name: secret-volume
           secret:
             secretName: {{ include "holborn-wordpress.fullname" . }}
-        - name: nfs-hdiver
-          nfs:
-            server: 192.168.124.5
-            path: /nfs/hdiver
+        # Additional mounts
+        {{- with .Values.wordpress.mounts.additionalVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -147,6 +147,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-#        - name: configmap
-#          configMap:
-#            name: { include "holborn-wordpress.appFullname" . }}

@@ -45,17 +45,16 @@ data:
     upstream php {
       server {{ include "holborn-wordpress.appFullname" . }}:{{ .Values.service.appPort }};
     }
+    {{- if .Values.wordpress.resource.enabled }}
+    upstream resource {
+      server {{ .Values.wordpress.resource.enabled }}:{{ .Values.service.appPort }};
+    }
+    {{- end }}
     server {
       listen        80;
       server_name   _;
       root          /var/www/html;
       index         index.php;
-      #root          /var/www/clarke/holborn2/wp;
-      #index         index.php index.html;
-      #subs_filter_types  *;
-      #subs_filter        'src="http://holborn' 'src="https://holborn';
-      #subs_filter        'http://holborn' 'https://holborn' ig;
-      #sub_filter_once     off;
 
       location /members-private/ {
         auth_basic    "Holborn Members Section";
@@ -90,6 +89,24 @@ data:
         rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 last;
         rewrite ^/(.*)$ /index.php/$1;
       }
+
+      {{- if .Values.wordpress.resource.enabled }}
+      location /resources {
+        location = / {
+          rewrite ^(.+)$ /resources/index.php?q=$1 last;
+        }
+        try_files $uri $uri/ /index.php;
+        location ~ \.php$ {
+          #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+          fastcgi_index index.php;
+          fastcgi_intercept_errors on;
+          fastcgi_param SCRIPT_FILENAME /var/www/html/resources$fastcgi_script_name;
+          include fastcgi.conf;
+          fastcgi_pass resources;
+          #try_files $uri $uri/ /index.php?$args =404;
+        }
+      }
+      {{- end }}
 
       location ~ \.php$ {
         #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
@@ -141,4 +158,4 @@ data:
     fastcgi_param  REDIRECT_STATUS    200;
 
   gsv: |-
-    google-site-verification: {{ .Values.wordpress.google.siteVerification }}
+    google-site-verification: {{ .Values.wordpress.google.siteVerification | quote }}
