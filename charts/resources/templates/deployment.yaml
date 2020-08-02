@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "resources.fullname" . }}
+  labels:
+    {{- include "resources.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "resources.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "resources.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "resources.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: content
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.app.repository }}/{{ .Values.image.app.container }}:{{ .Values.image.app.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.app.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /var/www/html
+              echo "Alive" > /var/www/html/healthcheck.txt
+              apk add --no-cache rsync
+              rsync --exclude='*.php' -aq /resources/ /var/www/web/resources
+              rsync --exclude='*' --include='*.php' -aq /resources/ /var/www/html/resources
+          volumeMounts:
+          - mountPath:  /health
+            name:       scratch
+          - mountPath:  /var/www/www/resources
+            name:       php-content
+        {{- with .Values.app.additional.mounts }}
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.php.container }}:{{ .Values.image.php.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: phpfpm
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            periodSeconds:  20
+            failureThreshold: 10
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - '/usr/local/bin/php-fpm-healthcheck'
+          readinessProbe:
+            periodSeconds:  20
+            failureThreshold: 10
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - '/usr/local/bin/php-fpm-healthcheck'
+          resources:
+            {{- toYaml .Values.resources.php | nindent 12 }}
+          volumeMounts:
+          - mountPath:  /health
+            name:       scratch
+          - mountPath:  /var/www/html/resources
+            name:       php-content
+          - mountPath:  /var/www/html/resources/application/config/database.php
+            name:       secrets
+            subPath:    php-database-settings
+            readOnly:   true
+      volumes:
+        - name: scratch
+          emptyDir: {}
+        - name: php-content
+          emptyDir: {}
+        - name: secrets
+          secret:
+            secretName: {{ include "resources.fullname" . }}
+        # Resource mounts
+        {{- with .Values.app.additional.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

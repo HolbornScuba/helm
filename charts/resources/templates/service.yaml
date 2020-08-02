@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "resources.fullname" . }}
+  labels:
+    {{- include "resources.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: phpfpm
+      protocol: TCP
+      name: phpfpm
+  selector:
+    {{- include "resources.selectorLabels" . | nindent 4 }}
