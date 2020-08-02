@@ -93,12 +93,12 @@ data:
       {{- if .Values.wordpress.resource.enabled }}
       location /resources {
         location = / {
-          rewrite ^(.+)$ /resources/index.php?q=$1 last;
+          rewrite ^(.+)$ /resources/login.php?q=$1 last;
         }
-        try_files $uri $uri/ /index.php;
+        try_files $uri $uri/ /resources/login.php?$query_string;
         location ~ \.php$ {
           #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
-          fastcgi_index index.php;
+          fastcgi_index login.php;
           fastcgi_intercept_errors on;
           fastcgi_param SCRIPT_FILENAME /var/www/html/resources$fastcgi_script_name;
           include fastcgi.conf;
