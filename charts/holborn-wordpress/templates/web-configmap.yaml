@@ -73,6 +73,10 @@ data:
         rewrite ^(.+)$ /index.php?q=$1 last;
       }
 
+      location /wp-admin {
+        try_files $uri $uri/ /wp-admin/index.php;
+      }
+
       location / {
         try_files $uri $uri/ /index.php;
       }

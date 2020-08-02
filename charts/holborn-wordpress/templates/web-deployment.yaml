@@ -74,6 +74,9 @@ spec:
           - mountPath:  /var/www/html/wp-content
             subPath:    wp-content
             name:       nfs-hdiver
+          - mountPath:  /var/www/html/wp-admin
+            subPath:    wp-admin-static
+            name:       nfs-hdiver
           - mountPath:  /var/www/html/{{ .Values.wordpress.google.siteVerification }}
             subPath:    gsv
             name:       nginx-config
