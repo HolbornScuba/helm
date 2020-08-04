@@ -81,16 +81,23 @@ spec:
             subPath:    gsv
             name:       nginx-config
             readOnly:   true
+        {{- if .Values.wordpress.resource.enabled }}
+        {{- toYaml .Values.wordpress.resource.mounts | nindent 10 }}
+        {{- end }}
       volumes:
         - name: webroot
           emptyDir: {}
         - name: nginx-config
           configMap:
             name: {{ include "holborn-wordpress.webFullname" . }}
-        - name: nfs-hdiver
-          nfs:
-            server: 192.168.124.5
-            path: /nfs/hdiver
+        # Additional mounts
+        {{- with .Values.wordpress.mounts.additionalVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        # Resource mounts
+        {{- with .Values.wordpress.resource.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
