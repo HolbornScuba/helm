@@ -43,6 +43,8 @@ spec:
               apk add --no-cache rsync
               rsync -arq --prune-empty-dirs --include='*/' --exclude='*.php'               /resources/ /var/www/html/resources
               rsync -arq --prune-empty-dirs --include='*/' --include='*.php' --exclude='*' /resources/ /var/www/php/resources
+              chown -R 82.82 /var/www/html/resources
+              chown -R 82.82 /var/www/php/resources
           volumeMounts:
           - mountPath:  /health
             name:       scratch
@@ -88,11 +90,10 @@ spec:
             name:       secrets
             subPath:    php-database-settings
             readOnly:   true
-          - mountPath:  /usr/local/etc/php-fpm.d/site.conf
-            subPath:    site-conf
+          - mountPath:  /usr/local/etc/php-fpm.d/path.conf
+            subPath:    path-conf
             name:       config-map
             readOnly:   true
-
       volumes:
         - name: scratch
           emptyDir: {}
