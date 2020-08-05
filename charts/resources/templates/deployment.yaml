@@ -90,7 +90,7 @@ spec:
             name:       secrets
             subPath:    php-database-settings
             readOnly:   true
-          - mountPath:  /usr/local/etc/php-fpm.d/zz-path.conf
+          - mountPath:  /usr/local/etc/php-fpm.d/path.conf
             subPath:    path-conf
             name:       config-map
             readOnly:   true
