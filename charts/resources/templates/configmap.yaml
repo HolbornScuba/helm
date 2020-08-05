@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "resources.fullname" . }}
+  labels:
+    {{- include "resources.labels" . | nindent 4 }}
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+# php-fpm /usr/local/etc/php-fpm.d/path.conf
+  path-conf: |-
+    chdir = /var/www/html
+    catch_workers_output = yes
+    access.format = "%t \"%m %r%Q%q\" %s %f %{mili}d %{kilo}M %C%%"
