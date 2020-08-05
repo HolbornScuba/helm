@@ -53,6 +53,16 @@ entries:
     version: 0.1.2
   resources:
   - apiVersion: v2
+    appVersion: 1.0.2
+    created: "2020-08-05T07:42:44.523842217Z"
+    description: Resources php-fpm service
+    digest: 25f9a3ba08e8df2dafb9c9cff0a1c2883768b97bf30cedd066a6e429210d51e9
+    name: resources
+    type: application
+    urls:
+    - https://github.com/HolbornScuba/helm/releases/download/resources-0.1.1/resources-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: 1.16.0
     created: "2020-08-04T06:17:52.179502008Z"
     description: Resources php-fpm service
