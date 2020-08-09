@@ -41,6 +41,10 @@ spec:
               mkdir -p /var/www/html
               echo "Alive" > /var/www/html/healthcheck.txt
               apk add --no-cache rsync
+              {{- if .Values.ingress.enabled }}
+              {{- $host0 := index .Values.ingress.hosts 0 }}
+              sed -i "s/holbornscubalondon.co.uk/{{- $host0.host }}/g" /resources/application/config/config.php
+              {{- end }}
               rsync -arq --prune-empty-dirs --include='*/' --exclude='*.php'               /resources/ /var/www/html/resources
               rsync -arq --prune-empty-dirs --include='*/' --include='*.php' --exclude='*' /resources/ /var/www/php/resources
               chown -R 82.82 /var/www/html/resources
