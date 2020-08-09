@@ -70,7 +70,7 @@ spec:
           emptyDir: {}
         - name: nginx-config
           configMap:
-            name: {{ include "resources.webFullname" . }}
+            name: {{ include "resources.fullname" . }}
         # Resource volumes
         {{- with .Values.app.additional.volumes }}
         {{- toYaml . | nindent 8 }}

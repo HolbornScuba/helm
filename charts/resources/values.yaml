@@ -20,6 +20,8 @@ app:
 replicaCount: 1
 
 image:
+  webRepo:    nginx
+  webTag:     1.19.1
   app:
     repository: secure.serverbox.co.uk
     container:  holborn-resources
