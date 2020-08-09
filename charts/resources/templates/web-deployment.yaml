@@ -1,0 +1,90 @@
+---
+{{- if .Values.ingress.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "resources.webFullname" . }}
+  labels:
+    {{- include "resources.webLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "resources.webSelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/nginxConfig: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | trunc 63 }}
+      labels:
+        {{- include "resources.webSelectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "resources.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: nginx
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.webRepo }}:{{ .Values.image.webTag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            #periodSeconds:  20
+            #failureThreshold: 100
+            httpGet:
+              path: /_healthz/index.html
+              port: http
+          readinessProbe:
+            #periodSeconds:  20
+            #failureThreshold: 100
+            httpGet:
+              path: /_healthz/index.html
+              port: http
+          resources:
+            {{- toYaml .Values.nginx.resources | nindent 12 }}
+          volumeMounts:
+          - mountPath:  /etc/nginx/nginx.conf
+            name:       nginx-config
+            subPath:    nginx-conf
+            readOnly:   true
+          - mountPath:  /etc/nginx/conf.d/default.conf
+            name:       nginx-config
+            subPath:    default-conf
+            readOnly:   true
+          - mountPath:  /etc/nginx/fastcgi.conf
+            name:       nginx-config
+            subPath:    fastcgi-conf
+            readOnly:   true
+          - mountPath:  /var/www/html
+            name:       webroot
+        {{- toYaml .Values.app.additional.mounts | nindent 10 }}
+      volumes:
+        - name: webroot
+          emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: {{ include "resources.webFullname" . }}
+        # Resource volumes
+        {{- with .Values.app.additional.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

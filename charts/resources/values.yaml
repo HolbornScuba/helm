@@ -59,6 +59,8 @@ securityContext: {}
 
 service:
   type: ClusterIP
+  webPort: 80
+  appPort: 9000
   port: 9000
 
 ingress:
@@ -74,7 +76,7 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   hosts:
     - host: chart-example.local
-      paths: []
+      paths: ['/']
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -119,3 +121,27 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+nginx:
+  rewriteLog: false
+  # Resources
+  resources:
+    limits:
+       cpu: 250m
+       memory: 256Mi
+    requests:
+       cpu: 10m
+       memory: 128Mi
+  # Nginx config
+  cgiCache:
+    size: false
+    path: /var/cache/nginx/cgi_cache
+    inactive: 24h
+    annotations: {}
+
+  proxyCache:
+    # Size (in GB) doubles as an on/off flag.
+    size: false
+    path: /var/cache/nginx/proxy_cache
+    inactive: 24h
+    annotations: {}

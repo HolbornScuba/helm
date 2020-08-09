@@ -61,3 +61,26 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+==============   Web      Content   ==============
+*/}}
+
+{{- define "resources.webName" -}}
+{{- printf "%s-web" (include "resources.name" .) -}}
+{{- end -}}
+
+{{- define "resources.webFullname" -}}
+{{- printf "%s-web" (include "resources.fullname" .) -}}
+{{- end -}}
+
+{{- define "resources.webSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "resources.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}-web
+{{- end -}}
+
+{{- define "resources.webLabels" -}}
+helm.sh/chart: {{ include "resources.chart" . }}
+{{ include "resources.webSelectorLabels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
