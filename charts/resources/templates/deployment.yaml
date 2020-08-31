@@ -57,6 +57,9 @@ spec:
         {{- with .Values.app.additional.mounts }}
         {{- toYaml . | nindent 10 }}
         {{- end }}
+        {{- with .Values.app.additional.initMounts }}
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -98,6 +101,12 @@ spec:
             subPath:    path-conf
             name:       config-map
             readOnly:   true
+        {{- with .Values.app.additional.mounts }}
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.app.additional.appMounts }}
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
       volumes:
         - name: scratch
           emptyDir: {}
