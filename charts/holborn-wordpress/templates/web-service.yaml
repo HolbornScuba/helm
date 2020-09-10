@@ -11,5 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: 88
+      targetPort: redirect
+      protocol: TCP
+      name: redirect
   selector:
     {{- include "holborn-wordpress.webSelectorLabels" . | nindent 4 }}

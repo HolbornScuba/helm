@@ -33,6 +33,9 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+            - name: redirect
+              containerPort: 88
+              protocol: TCP
           livenessProbe:
             #periodSeconds:  20
             #failureThreshold: 100

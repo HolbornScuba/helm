@@ -51,6 +51,11 @@ data:
     }
     {{- end }}
     server {
+      listen        88;
+      server_name   wwww.holbornscubalondon.co.uk;
+      return 301    https://holbornscubalondon.co.uk$request_uri;
+    }
+    server {
       listen        80;
       server_name   _;
       root          /var/www/html;
