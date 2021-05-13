@@ -27,7 +27,7 @@ spec:
         - name: health-check
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.appRepo }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.appRepo }}:{{ .Values.image.appTag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - sh
@@ -42,7 +42,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.appRepo }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.appRepo }}:{{ .Values.image.appTag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: phpfpm

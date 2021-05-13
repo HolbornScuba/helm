@@ -8,6 +8,7 @@ image:
   webRepo:    nginx
   webTag:     1.19.1
   appRepo:    wordpress
+  appTag:     5.7.1-php8.0-fpm-alpine
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
