@@ -3,6 +3,16 @@ entries:
   holborn-wordpress:
   - apiVersion: v2
     appVersion: 5-fpm-alpine
+    created: "2021-05-13T18:01:38.699034901Z"
+    description: Nginx + php-fpm + wordpress
+    digest: 5c8a23d2af33449ac09f8d467405bf19675cc7ad3c699a091fb6fbac793cbadb
+    name: holborn-wordpress
+    type: application
+    urls:
+    - https://github.com/HolbornScuba/helm/releases/download/holborn-wordpress-0.1.7/holborn-wordpress-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
+    appVersion: 5-fpm-alpine
     created: "2020-08-04T06:46:07.274160197Z"
     description: Nginx + php-fpm + wordpress
     digest: 8ef4d905604b998fd191b0c90877ed16bd9cddeb83b3c947da3301f38fadd3dc
