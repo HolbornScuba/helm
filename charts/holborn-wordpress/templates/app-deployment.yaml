@@ -76,15 +76,16 @@ spec:
           - name: WORDPRESS_NONCE_SALT_FILE
             value: /secrets/nonceSalt
           livenessProbe:
-            periodSeconds:  60
-            failureThreshold: 5
+            periodSeconds:  90
+            failureThreshold: 15
+            timeoutSeconds: 10
             exec:
               command:
                 - /bin/bash
                 - -c
                 - "apk add --no-cache fcgi rsync && rsync --include='*.css' --include='*.js' --exclude='*.php' -aq /var/www/html/wp-admin/{css,images,js} /var/www/wp-admin-static/ && /health/check"
           readinessProbe:
-            periodSeconds:  20
+            periodSeconds:  30
             failureThreshold: 10
             exec:
               command:
