@@ -30,10 +30,13 @@ spec:
           image: "{{ .Values.image.appRepo }}:{{ .Values.image.appTag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
+            - /bin/bash
+            - -c
             - /bin/initScript
           volumeMounts:
           - mountPath:  /bin/initScript
             name:       php-config
+            subPath:    initScript
           - mountPath:  /health
             name:       scratch
           - mountPath:  /nfs-hdiver
