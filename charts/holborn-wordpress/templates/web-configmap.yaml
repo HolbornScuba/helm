@@ -1,3 +1,5 @@
+{{- $host0 := index .Values.ingress.hosts 0 }}
+---
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -53,11 +55,16 @@ data:
     server {
       listen        88;
       server_name   wwww.holbornscubalondon.co.uk;
-      return 301    https://holbornscubalondon.co.uk$request_uri;
+      return 308    https://{{- $host0.host }}$request_uri;
     }
     server {
       listen        80;
       server_name   _;
+      return 308    https://{{- $host0.host }}$request_uri;
+    }
+    server {
+      listen        80;
+      server_name   {{ $host0.host }};
       root          /var/www/html;
       index         index.php;
 

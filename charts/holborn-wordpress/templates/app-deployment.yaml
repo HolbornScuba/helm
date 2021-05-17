@@ -30,14 +30,14 @@ spec:
           image: "{{ .Values.image.appRepo }}:{{ .Values.image.appTag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - sh
-            - -c
-            - |
-              curl -Lo /health/check 'https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck' \
-              && chmod +x /health/check
+            - /bin/initScript
           volumeMounts:
+          - mountPath:  /bin/initScript
+            name:       php-config
           - mountPath:  /health
             name:       scratch
+          - mountPath:  /nfs-hdiver
+            name:       nfs-hdiver
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -129,6 +129,7 @@ spec:
         - name: php-config
           configMap:
             name: {{ include "holborn-wordpress.appFullname" . }}
+            defaultMode: 0555
         - name: secret-volume
           secret:
             secretName: {{ include "holborn-wordpress.fullname" . }}

@@ -8,7 +8,7 @@ image:
   webRepo:    nginx
   webTag:     1.19.1
   appRepo:    wordpress
-  appTag:     5.7.1-php8.0-fpm-alpine
+  appTag:     5.7.2-php7.4-fpm-alpine
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -44,8 +44,8 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/acme-challenge-type: dns01
-    cert-manager.io/acme-dns01-provider: rfc2136
+    #cert-manager.io/acme-challenge-type: dns01
+    #cert-manager.io/acme-dns01-provider: rfc2136
     cert-manager.io/cluster-issuer: cm-letsencrypt-prod
     ingress.kubernetes.io/force-ssl-redirect: 'true'
     # kubernetes.io/tls-acme: "true"
@@ -59,16 +59,24 @@ ingress:
     - host: holbornscubalondon.co.uk
       paths:
         - /
-    #- host: holbornscubalondon.com
-    #  paths:
-    #    - /
+    - host: www.holbornscubalondon.co.uk
+      paths:
+        - /
+    - host: holbornscubalondon.com
+      paths:
+        - /
+    - host: www.holbornscubalondon.com
+      paths:
+        - /
   tls:
     - secretName: holbornscubalondon.co.uk-tls
       hosts:
         - holbornscubalondon.co.uk
-    #- secretName: holbornscubalondon.com-tls
-    #  hosts:
-    #    - holbornscubalondon.com
+        - www.holbornscubalondon.co.uk
+    - secretName: holbornscubalondon.com-tls
+      hosts:
+        - holbornscubalondon.com
+        - www.holbornscubalondon.com
 
 nodeSelector: {}
 

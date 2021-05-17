@@ -2,5 +2,5 @@ apiVersion:   v2
 name:         holborn-wordpress
 description:  Nginx + php-fpm + wordpress
 type:         application
-version:      0.1.8
+version:      0.1.9
 appVersion:   5-fpm-alpine

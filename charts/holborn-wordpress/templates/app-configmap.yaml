@@ -21,3 +21,10 @@ data:
     pm.status_path = /status
   gsv: |-
     google-site-verification: {{ .Values.wordpress.google.siteVerification }}
+  initScript: |-
+    #/bin/sh
+    curl -Lo /health/check 'https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck'
+    chmod +x /health/check
+    apk add --no-cache rsync
+    rsync --include='*.css' --include='*.js' --exclude='*.php' -aq /usr/src/wordpress/wp-admin/{css,images,js} /var/www/wp-admin-static
+    rsync --include='*.css' --include='*.js' --exclude='*.php' -aq /usr/src/wordpress/wp-includes /nfs-hdiver
