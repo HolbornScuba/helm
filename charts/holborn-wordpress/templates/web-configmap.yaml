@@ -70,7 +70,7 @@ data:
 
       location /members-private/ {
         auth_basic    "Holborn Members Section";
-        auth_basic_user_file  /var/www/clarke/holborn2/wp/members-private/.htpasswd;
+        auth_basic_user_file  /var/www/html/members-private/.htpasswd;
         autoindex   on;
       }
 
