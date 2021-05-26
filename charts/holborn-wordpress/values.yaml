@@ -119,6 +119,7 @@ wordpress:
     uploads:  false
     plugins:  flase
     additionalVolumes: []
+  mailserver: '127.0.0.1'
 #      - name: nfs
 #        nfs:
 #          server: 127.0.0.1
