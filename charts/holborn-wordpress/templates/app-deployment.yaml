@@ -80,6 +80,8 @@ spec:
             value: /secrets/nonceSalt
           - name: SMTPHOST
             value: {{ .Values.wordpress.mailserver  | quote }}
+          - name: ALTERNATE_WP_CRON
+            value: "true"
           livenessProbe:
             periodSeconds:  90
             failureThreshold: 15
