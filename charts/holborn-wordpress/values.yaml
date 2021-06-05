@@ -41,42 +41,39 @@ service:
   appPort:  9000
 
 ingress:
-  enabled: true
+  enabled: false
   annotations:
     kubernetes.io/ingress.class: nginx
-    #cert-manager.io/acme-challenge-type: dns01
-    #cert-manager.io/acme-dns01-provider: rfc2136
     cert-manager.io/cluster-issuer: cm-letsencrypt-prod
     ingress.kubernetes.io/force-ssl-redirect: 'true'
-    # kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      subs_filter_types  *;
-      subs_filter        'src="http://holborn' 'src="https://holborn';
-      subs_filter        'http://holborn' 'https://holborn' ig;
-      sub_filter_once     off;
-
-  hosts:
-    - host: holbornscubalondon.co.uk
-      paths:
-        - /
-    - host: www.holbornscubalondon.co.uk
-      paths:
-        - /
-    - host: holbornscubalondon.com
-      paths:
-        - /
-    - host: www.holbornscubalondon.com
-      paths:
-        - /
-  tls:
-    - secretName: holbornscubalondon.co.uk-tls
-      hosts:
-        - holbornscubalondon.co.uk
-        - www.holbornscubalondon.co.uk
-    - secretName: holbornscubalondon.com-tls
-      hosts:
-        - holbornscubalondon.com
-        - www.holbornscubalondon.com
+#     nginx.ingress.kubernetes.io/configuration-snippet: |
+#       subs_filter_types  *;
+#       subs_filter        'src="http://holborn' 'src="https://holborn';
+#       subs_filter        'http://holborn' 'https://holborn' ig;
+#       sub_filter_once     off;
+#
+#   hosts:
+#     - host: holbornscubalondon.co.uk
+#       paths:
+#         - /
+#     - host: www.holbornscubalondon.co.uk
+#       paths:
+#         - /
+#     - host: holbornscubalondon.com
+#       paths:
+#         - /
+#     - host: www.holbornscubalondon.com
+#       paths:
+#         - /
+#   tls:
+#     - secretName: holbornscubalondon.co.uk-tls
+#       hosts:
+#         - holbornscubalondon.co.uk
+#         - www.holbornscubalondon.co.uk
+#     - secretName: holbornscubalondon.com-tls
+#       hosts:
+#         - holbornscubalondon.com
+#         - www.holbornscubalondon.com
 
 nodeSelector: {}
 
